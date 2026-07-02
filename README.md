@@ -6,12 +6,12 @@
 
 Audit Helm values for insecure defaults and missing production overrides. It solves review drift by turning plain-text plans into deterministic CI-friendly findings.
 
-## Input Contract 7
+## Input Contract
 
 Accepts Helm values text. The reader supports plain text, JSON, JSONL, and CSV so the
 tool can fit into scripts, CI jobs, and review exports.
 
-## CLI Walkthrough 7
+## CLI Walkthrough
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -20,7 +20,7 @@ helm-values-check examples/sample.txt --json --fail-on medium
 python -m helm_values_check --help
 ```
 
-## Rule Surface 7
+## Rule Surface
 
 | Rule | Severity | Meaning |
 |---|---:|---|
@@ -28,7 +28,7 @@ python -m helm_values_check --help
 | `tls-disabled` | medium | TLS is disabled |
 | `single-replica` | low | single replica configured |
 
-## Validation Notes 7
+## Validation Notes
 
 ```bash
 ruff check .
