@@ -1,48 +1,46 @@
-# helm-values-check
+# Helm Values Check
 
-> Audit Helm values for insecure defaults and missing production overrides.
+<p align="center">
+  <img src="assets/readme-cover.svg" alt="Helm Values Check cover" width="100%" />
+</p>
 
-## Spec sheet Overview
+![stack](https://img.shields.io/badge/stack-Python-4b5563?style=flat-square) ![python](https://img.shields.io/badge/python-3.11-2563eb?style=flat-square) ![license](https://img.shields.io/badge/license-MIT-16a34a?style=flat-square) ![ci](https://img.shields.io/badge/ci-GitHub%20Actions-dc2626?style=flat-square)
 
-Audit Helm values for insecure defaults and missing production overrides. It solves review drift by turning plain-text plans into deterministic CI-friendly findings.
+Audit Helm values for insecure defaults and missing production overrides.
 
-## Input Contract
+## The short version
 
-Accepts Helm values text. The reader supports plain text, JSON, JSONL, and CSV so the
-tool can fit into scripts, CI jobs, and review exports.
+`helm-values-check` is intentionally small: feed it a file, get deterministic findings, and decide whether the result should block a merge or just guide cleanup.
 
-## CLI Walkthrough
+## Rule surface
+
+| Rule | Severity | What it catches |
+| --- | --- | --- |
+| `default-password` | high | default password detected |
+| `tls-disabled` | medium | TLS is disabled |
+| `single-replica` | low | single replica configured |
+
+## Usage
 
 ```bash
 python -m pip install -e ".[dev]"
 helm-values-check examples/sample.txt
 helm-values-check examples/sample.txt --json --fail-on medium
-python -m helm_values_check --help
 ```
 
-## Rule Surface
+## Useful defaults
 
-| Rule | Severity | Meaning |
-|---|---:|---|
-| `default-password` | high | default password detected |
-| `tls-disabled` | medium | TLS is disabled |
-| `single-replica` | low | single replica configured |
+| Option | Reason |
+| --- | --- |
+| `--json` | machine-readable output for scripts |
+| `--fail-on medium` | stricter CI gate when warnings matter |
+| `--format auto` | let the reader detect text, CSV, JSON, or JSONL |
 
-## Validation Notes
+## Local checks
 
 ```bash
+python -m pip install -e ".[dev]"
 ruff check .
 pytest
 python -m helm_values_check --help
 ```
-
-Example risky input:
-
-```text
-replicaCount 1 ingress tls false adminPassword changeme
-```
-
-Architecture: `cli.py` handles arguments, `core.py` reads and evaluates records, and
-`rules.py` keeps the project-specific policy explicit.
-
-License: MIT.
